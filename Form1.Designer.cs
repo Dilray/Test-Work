@@ -77,16 +77,31 @@ namespace Test_Work
         {
             string filePath = "orders.txt";
 
-            // Запись отфильтрованных данных в файл
-            using (StreamWriter writer = new StreamWriter(filePath, false)) // false для перезаписи
+            try
             {
-                foreach (var order in filteredOrders)
-                    writer.WriteLine(
-                    $"Заказ номер: {order.getOrderId()},    " +
-                    $"Вес: {order.getOrderWeight()},    " +
-                    $"Район: '{order.getOrderDistrict()}',    " +
-                    $"Время и дата доставки: {order.getOrderDate()}."
-                    );
+                // Запись отфильтрованных данных в файл
+                using (StreamWriter writer = new StreamWriter(filePath, false)) // false для перезаписи
+                {
+                    foreach (var order in filteredOrders)
+                    {
+                        writer.WriteLine(
+                            $"Заказ номер: {order.getOrderId()},    " +
+                            $"Вес: {order.getOrderWeight()},    " +
+                            $"Район: '{order.getOrderDistrict()}',    " +
+                            $"Время и дата доставки: {order.getOrderDate()}."
+                        );
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                // Обработка исключений ввода-вывода
+                Console.WriteLine($"Ошибка при записи в файл: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Обработка других возможных исключений
+                Console.WriteLine($"Произошла ошибка: {ex.Message}");
             }
         }
 
@@ -97,42 +112,64 @@ namespace Test_Work
         {
             List<Order> orders = new List<Order>();
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            try
             {
-                // Устанавливаем заголовок окна
-                openFileDialog.Title = "Выберите файл";
-
-                // Устанавливаем фильтр для файлов
-                openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    string filePath = openFileDialog.FileName;
+                    // Устанавливаем заголовок окна
+                    openFileDialog.Title = "Выберите файл";
 
-                    MessageBox.Show($"Выбранный файл: {filePath}");
+                    // Устанавливаем фильтр для файлов
+                    openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
 
-                    bool b = false;
-                    foreach (string line in File.ReadLines(filePath))
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        string[] items = line.Split();
+                        string filePath = openFileDialog.FileName;
 
-                        if (b)
-                            orders.Add(new Order(items[0], items[1], items[2], items[3] + ' ' + items[4]));
-                        else
+                        MessageBox.Show($"Выбранный файл: {filePath}");
+
+                        bool b = false;
+                        foreach (string line in File.ReadLines(filePath))
                         {
-                            cityDistrict = items[0];
-                            firstDeliveryDateTime = DateTime.ParseExact(items[1] + ' ' + items[2], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                            b = true;
+                            string[] items = line.Split();
+
+                            if (b)
+                            {
+                                orders.Add(new Order(items[0], items[1], items[2], items[3] + ' ' + items[4]));
+                            }
+                            else
+                            {
+                                cityDistrict = items[0];
+                                firstDeliveryDateTime = DateTime.ParseExact(items[1] + ' ' + items[2], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                b = true;
+                            }
                         }
                     }
                 }
+
+                // Сортируем заказы
+                orders = SortOrders(ref orders);
+                // Принтуем в форму (для удобства)
+                PrintOrders(ref orders);
+                // Загружаем в новый файл "orders.txt" (находится в debug проекта)
+                LoadOrdersInFile(ref orders);
             }
-            // Сортируем заказы
-            orders = SortOrders(ref orders);
-            // Принтуем в форму (для удобства)
-            PrintOrders(ref orders);
-            // Загружаем в новый файл "orders.txt" (находится в debug проекта)
-            LoadOrdersInFile(ref orders);
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"Файл не найден: {ex.Message}");
+            }
+            catch (FormatException ex)
+            {
+                MessageBox.Show($"Ошибка формата данных: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Ошибка ввода-вывода: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка: {ex.Message}");
+            }
         }
 
         /// <summary>
