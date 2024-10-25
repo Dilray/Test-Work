@@ -47,12 +47,25 @@ namespace Test_Work
         /// </summary>
         private List<Order> SortOrders(ref List<Order> orders)
         {
-            // Фильтрация заказов
-            DateTime endTime = firstDeliveryDateTime.AddMinutes(30);
-            var sortedOrders = orders.Where(o => o.getOrderDistrict().Equals(cityDistrict, StringComparison.OrdinalIgnoreCase) &&
-                                                    o.getOrderDate() >= firstDeliveryDateTime &&
-                                                    o.getOrderDate() <= endTime).ToList();
-            return sortedOrders;
+            try
+            {
+                // Фильтрация заказов
+                DateTime endTime = firstDeliveryDateTime.AddMinutes(30);
+                var sortedOrders = orders.Where(o => o.getOrderDistrict().Equals(cityDistrict, StringComparison.OrdinalIgnoreCase) &&
+                                                        o.getOrderDate() >= firstDeliveryDateTime &&
+                                                        o.getOrderDate() <= endTime).ToList();
+                return sortedOrders;
+            }
+            catch (ArgumentNullException ex)
+            {
+                MessageBox.Show($"Ошибка: Список заказов не может быть null. {ex.Message}");
+                return new List<Order>(); // Возвращаем пустой список в случае ошибки
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка при сортировке заказов: {ex.Message}");
+                return new List<Order>(); // Возвращаем пустой список в случае ошибки
+            }
         }
 
         /// <summary>
@@ -224,7 +237,6 @@ namespace Test_Work
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
     }
 }
