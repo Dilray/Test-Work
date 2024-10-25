@@ -16,5 +16,10 @@ namespace Test_Work
         {
             InitializeComponent();
         }
+
+        private void label_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
