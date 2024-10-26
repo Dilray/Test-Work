@@ -6,11 +6,14 @@ using System.Linq;
 using System.Globalization;
 using System.Reflection.Emit;
 using System.Drawing;
+using Test_Work;
 
 namespace Test_Work
 {
     partial class Form1
     {
+        public List<Order> orders = new List<Order>();
+
         /// <summary>
         /// Обязательная переменная конструктора.
         /// </summary>
@@ -24,11 +27,12 @@ namespace Test_Work
         /// <summary>
         /// ListBox для вывода отфильтрованных заказов на форму
         /// </summary>
-        private ListBox listBox;
+        public ListBox listBox;
 
-        System.Windows.Forms.Label label;
+        private System.Windows.Forms.Label label;
         private DateTime firstDeliveryDateTime;
         private string cityDistrict;
+
         /// <summary>
         /// Освободить все используемые ресурсы.
         /// </summary>
@@ -42,10 +46,12 @@ namespace Test_Work
             base.Dispose(disposing);
         }
 
+        // public DateTime getFirstDeliveryDateTime() => firstDeliveryDateTime;
+
         /// <summary>
         /// Функция для сортировки заказов на основе данных вначале (район и дата первого заказа).
         /// </summary>
-        private List<Order> SortOrders(ref List<Order> orders)
+        public List<Order> SortOrders(List<Order> orders)
         {
             try
             {
@@ -71,7 +77,7 @@ namespace Test_Work
         /// <summary>
         /// Вывод заказов в форму (для удобства).
         /// </summary>
-        private void PrintOrders(ref List<Order> filteredOrders)
+        public void PrintOrders(List<Order> filteredOrders)
         {
             listBox.Items.Add("Отфильтрованные заказы:");
             foreach (var order in filteredOrders)
@@ -86,7 +92,7 @@ namespace Test_Work
         /// <summary>
         /// Загрузка отфильтрованных данных в текстовый файл 'orders.txt' (находится в debug проекта).
         /// </summary>
-        private void LoadOrdersInFile(ref List<Order> filteredOrders)
+        public void LoadOrdersInFile(List<Order> filteredOrders)
         {
             string filePath = "orders.txt";
 
@@ -118,13 +124,31 @@ namespace Test_Work
             }
         }
 
+        public void loadFromFile(string filePath)
+        {
+            bool b = false;
+            foreach (string line in File.ReadLines(filePath))
+            {
+                string[] items = line.Split();
+
+                if (b)
+                {
+                    orders.Add(new Order(items[0], items[1], items[2], items[3] + ' ' + items[4]));
+                }
+                else
+                {
+                    cityDistrict = items[0];
+                    firstDeliveryDateTime = DateTime.ParseExact(items[1] + ' ' + items[2], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                    b = true;
+                }
+            }
+        }
+
         /// <summary>
         /// Событие нажатия кнопки
         /// </summary>
         private void button1_Click(object sender, EventArgs e)
         {
-            List<Order> orders = new List<Order>();
-
             try
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -141,31 +165,16 @@ namespace Test_Work
 
                         MessageBox.Show($"Выбранный файл: {filePath}");
 
-                        bool b = false;
-                        foreach (string line in File.ReadLines(filePath))
-                        {
-                            string[] items = line.Split();
-
-                            if (b)
-                            {
-                                orders.Add(new Order(items[0], items[1], items[2], items[3] + ' ' + items[4]));
-                            }
-                            else
-                            {
-                                cityDistrict = items[0];
-                                firstDeliveryDateTime = DateTime.ParseExact(items[1] + ' ' + items[2], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                                b = true;
-                            }
-                        }
+                        loadFromFile(filePath);
                     }
                 }
 
                 // Сортируем заказы
-                orders = SortOrders(ref orders);
+                orders = SortOrders(orders);
                 // Принтуем в форму (для удобства)
-                PrintOrders(ref orders);
+                PrintOrders(orders);
                 // Загружаем в новый файл "orders.txt" (находится в debug проекта)
-                LoadOrdersInFile(ref orders);
+                LoadOrdersInFile(orders);
             }
             catch (FileNotFoundException ex)
             {
@@ -207,7 +216,6 @@ namespace Test_Work
             this.label.Size = new System.Drawing.Size(288, 19);
             this.label.TabIndex = 2;
             this.label.Text = "Effective Mobile тестовое задание 1";
-            this.label.Click += new System.EventHandler(this.label_Click);
             // 
             // myButton
             // 
@@ -240,4 +248,3 @@ namespace Test_Work
         }
     }
 }
-

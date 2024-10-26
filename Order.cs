@@ -11,7 +11,7 @@ namespace Test_Work
     /// <summary>
     /// Класс объекта "заказ"
     /// </summary>
-    internal class Order
+    public class Order
     {
         /// <summary>
         /// Поле айдишника заказа
