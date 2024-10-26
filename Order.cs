@@ -16,15 +16,15 @@ namespace Test_Work
         /// <summary>
         /// Поле айдишника заказа
         /// </summary>
-        protected int OrderId {  get; set; }
+        protected int OrderId { get; set; }
         /// <summary>
         /// Поле веса заказа (в килограммах, но на всякий случай сделал double).
         /// </summary>
-        protected double OrderWeight {  get; set; }
+        protected double OrderWeight { get; set; }
         /// <summary>
         /// Поле района заказа.
         /// </summary>
-        protected string OrderDistrict {  get; set; }
+        protected string OrderDistrict { get; set; }
         /// <summary>
         /// Поле даты заказа.
         /// </summary>
