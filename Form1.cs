@@ -67,7 +67,6 @@ namespace Test_Work
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             logger.Log("Попытка закрытия приложения.");
-            // Здесь вы можете выполнить действия перед закрытием формы
             DialogResult result = MessageBox.Show("Вы уверены, что хотите закрыть приложение?",
                                                    "Подтверждение",
                                                    MessageBoxButtons.YesNo,
@@ -187,7 +186,7 @@ namespace Test_Work
             logger.Log("Загрузка данных из файла в ListBox...");
             try
             {
-            bool b = false;
+            bool b = false; // Ввёл локальную переменную для считывания первой строки, ведь в ней лежат условия фильтрации
             foreach (string line in File.ReadLines(filePath))
             {
                 string[] items = line.Split();

@@ -1,12 +1,4 @@
 ﻿using System.Windows.Forms;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Globalization;
-using System.Reflection.Emit;
-using System.Drawing;
-using Test_Work;
 
 namespace Test_Work
 {
