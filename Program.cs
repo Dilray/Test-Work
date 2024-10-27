@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace Test_Work
 {
+
     internal static class Program
     {
         /// <summary>
