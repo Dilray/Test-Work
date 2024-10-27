@@ -3,8 +3,14 @@ using System.IO;
 
 namespace Test_Work
 {
+    /// <summary>
+    /// Класс для логирования приложения.
+    /// </summary>
     public class Logger
     {
+        /// <summary>
+        /// Поле для файла, куда будут записаны логи.
+        /// </summary>
         private string logFilePath;
 
         public Logger(string filePath)

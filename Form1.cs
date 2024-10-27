@@ -14,6 +14,9 @@ namespace Test_Work
 {
     public partial class Form1 : Form
     {
+        /// <summary>
+        /// Список, куда будут записаны все отфильтрованные заказы (для дальнейшей записи в файл).
+        /// </summary>
         public List<Order> orders = new List<Order>();
 
         /// <summary>
@@ -22,21 +25,30 @@ namespace Test_Work
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Кнопка для загрузки файла с данными
+        /// Кнопка для загрузки файла с данными.
         /// </summary>
         private Button myButton;
 
         /// <summary>
-        /// ListBox для вывода отфильтрованных заказов на форму
+        /// ListBox для вывода отфильтрованных заказов на форму.
         /// </summary>
         public ListBox listBox;
 
-        private System.Windows.Forms.Label label;
+        /// <summary>
+        /// Переменная кнопки "Загрузить файл с данными"
+        /// </summary>
+        private Label label;
+        /// <summary>
+        /// Вспомогательная переменная, куда будут записаны условия фильтрации (время первого заказа)
+        /// </summary>
         private DateTime firstDeliveryDateTime;
+        /// <summary>
+        /// Вспомогательная переменная, куда будут записаны условия фильтрации (район доставки)
+        /// </summary>
         private string cityDistrict;
 
 
-        static string logFilePath = "default.log"; // Путь по умолчанию.
+        static string logFilePath = "default.log"; // Путь по умолчанию
 
         /// <summary>
         /// Поле для логирования.
@@ -49,6 +61,9 @@ namespace Test_Work
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Функция обработки закрытия приложения
+        /// </summary>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             logger.Log("Попытка закрытия приложения.");
@@ -164,6 +179,9 @@ namespace Test_Work
             }
         }
 
+        /// <summary>
+        /// Загрузка данных из файла в ListBox
+        /// </summary>
         public void loadFromFile(string filePath)
         {
             logger.Log("Загрузка данных из файла в ListBox...");
